@@ -40,22 +40,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin account — default credentials shown on the Login page.
-        $admin = User::factory()->create([
-            'name'     => 'Admin User',
-            'email'    => 'admin@example.com',
-            'password' => 'password',
-            'role'     => 'admin',
+        $admin = User::factory()->firstOrcreate([
+            'name'     => 'Admin User', 'password' => 'password', 'role' => 'admin',
+            'email'    => 'admin@example.com'
         ]);
 
         // Normal borrower account (role defaults to 'user').
-        $borrower = User::factory()->create([
+        $borrower = User::factory()->firstOrcreate([
             'name'     => 'Test User',
-            'email'    => 'test@example.com',
-            'password' => 'password',
+            'email'    => 'test@example.com'
         ]);
 
         // One sample application so the dashboard/list aren't empty.
-        Loan::create([
+        Loan::firstOrcreate([
             'user_id'         => $admin->id,
             'purpose'         => 'Home renovation',
             'principal'       => 5000.00,
