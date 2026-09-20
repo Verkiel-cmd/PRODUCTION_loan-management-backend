@@ -1,6 +1,6 @@
 FROM php:8.3-cli
 WORKDIR /var/www/html
-RUN apt-get update && apt-get install -y unzip libzip-dev \
+RUN apt-get update && apt-get install -y unzip libzip-dev libonig-dev \
     && docker-php-ext-install pdo_mysql mbstring zip \
     && rm -rf /var/lib/apt/lists/* \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
