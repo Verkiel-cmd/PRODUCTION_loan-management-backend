@@ -40,13 +40,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin account — default credentials shown on the Login page.
-        $admin = User::factory()->firstOrcreate(
+        $admin = User::firstOrcreate(
             ['email'    => 'admin@example.com'],
             ['name'     => 'Admin User', 'password' => 'password', 'role' => 'admin'],
         );
 
         // Normal borrower account (role defaults to 'user').
-        $borrower = User::factory()->firstOrcreate(
+        $borrower = User::firstOrcreate(
             ['email'    => 'test@example.com'],
             ['name'     => 'Test User', 'password' => 'password'],
         );
