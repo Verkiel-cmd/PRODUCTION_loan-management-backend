@@ -40,26 +40,30 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin account — default credentials shown on the Login page.
-        $admin = User::factory()->firstOrcreate([
-            'name'     => 'Admin User', 'password' => 'password', 'role' => 'admin',
-            'email'    => 'admin@example.com'
-        ]);
+        $admin = User::factory()->firstOrcreate(
+            ['email'    => 'admin@example.com'],
+            ['name'     => 'Admin User', 'password' => 'password', 'role' => 'admin'],
+        );
 
         // Normal borrower account (role defaults to 'user').
-        $borrower = User::factory()->firstOrcreate([
-            'name'     => 'Test User',
-            'email'    => 'test@example.com'
-        ]);
+        $borrower = User::factory()->firstOrcreate(
+            ['email'    => 'test@example.com'],
+            ['name'     => 'Test User', 'password' => 'password'],
+        );
 
         // One sample application so the dashboard/list aren't empty.
-        Loan::firstOrcreate([
-            'user_id'         => $admin->id,
-            'purpose'         => 'Home renovation',
-            'principal'       => 5000.00,
-            'interest_rate'   => 12.00,
-            'duration_months' => 12,
-            'status'          => 'active',
-        ]);
+        Loan::firstOrCreate(
+            [
+                'user_id' => $admin->id,
+                'purpose' => 'Home renovation',
+            ],
+            [
+                'principal'       => 5000.00,
+                'interest_rate'   => 12.00,
+                'duration_months' => 12,
+                'status'          => 'active',
+            ],
+        );
 
         $borrower->id; // reference kept for clarity; borrower stays loan-less.
         unset($borrower);
