@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.5-cli
 WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y unzip libzip-dev libonig-dev \
     && docker-php-ext-install pdo_mysql mbstring zip \
