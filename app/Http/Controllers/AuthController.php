@@ -65,20 +65,26 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
+            'username' => ['required'],
             'email'    => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($request->only('email', 'password'), true)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        $user = User::where('email', $request->email)->first();
+
+
+        if (! $user || $user->username !== $request->username ||
+                ! Hash::check($request->password, $user->password)) {
+                throw ValidationException::withMessages([
+                    'email' => ['The provided credentials are incorrect.'],
+                ]);
+            }
+
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            return response()->json(['user' => Auth::user()]);
         }
-
-        $request->session()->regenerate();
-
-        return response()->json(['user' => Auth::user()]);
-    }
 
     /* -------------------------------------------------------------------------
      * POST /api/register
@@ -88,13 +94,13 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user = User::create([
-            'name'     => $request->name,
+            'username' => $request->username,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
             'role'     => 'user',
@@ -141,8 +147,8 @@ class AuthController extends Controller
     {
         return response()->json(
             User::query()
-                ->select('id', 'name', 'email', 'role')
-                ->orderBy('name')
+                ->select('id','username', 'email', 'role')
+                ->orderBy('username')
                 ->get()
         );
     }

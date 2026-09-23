@@ -6,6 +6,8 @@ use App\Models\Loan;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+//for hash password
+use Illuminate\Support\Facades\Hash;
 
 /*
  * =============================================================================
@@ -40,16 +42,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Admin account — default credentials shown on the Login page.
-        $admin = User::firstOrcreate(
-            ['email'    => 'admin@example.com'],
-            ['name'     => 'Admin User', 'password' => 'password', 'role' => 'admin'],
+        $admin = User::firstOrCreate(
+            ['email' => 'ezekielU675@gmail.com'],                  //admin email
+            ['username' => 'Kiel',                            //your admin username
+             'password' => Hash::make('araymo123'), //password
+             'role' => 'admin'],
         );
+    
 
-        // Normal borrower account (role defaults to 'user').
-        $borrower = User::firstOrcreate(
-            ['email'    => 'test@example.com'],
-            ['name'     => 'Test User', 'password' => 'password'],
-        );
 
         // One sample application so the dashboard/list aren't empty.
         Loan::firstOrCreate(
@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        $borrower->id; // reference kept for clarity; borrower stays loan-less.
-        unset($borrower);
+        //$borrower->id; // reference kept for clarity; borrower stays loan-less.
+        //unset($borrower);
     }
 }
