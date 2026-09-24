@@ -91,7 +91,7 @@ class LoanController extends Controller
     }
 
     /**
-     * Create a new loan application. Status always starts as 'pending'.
+     * Users only function can create a new loan application. Status always starts as 'pending'.
      */
     public function store(Request $request)
     {

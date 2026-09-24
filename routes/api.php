@@ -45,12 +45,12 @@ use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
 
 // ---- Public routes (no session required) ------------------------------------
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth-login');
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:auth-register');
 
-Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:6,1');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->middleware('throttle:6,1');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:6,1');
 
 // ---- Authenticated routes (401 for guests) ----------------------------------
 Route::middleware('auth')->group(function () {
