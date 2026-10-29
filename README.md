@@ -1,5 +1,3 @@
----
-
 Required Notice: Copyright (c) 2026 Verkiel-cmd (https://github.com/Verkiel-cmd)
 
 # PolyForm Strict License 1.0.0
@@ -62,7 +60,7 @@ The **licensor** is the individual or entity offering these terms, and the **sof
 
 **Use** means anything you do with the software requiring one of your licenses.
 
----
+
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
