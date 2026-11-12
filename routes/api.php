@@ -43,6 +43,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
+
 
 // ---- Public routes (no session required) ------------------------------------
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:auth-login');
@@ -54,6 +56,10 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middle
 
 // ---- Authenticated routes (401 for guests) ----------------------------------
 Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
 

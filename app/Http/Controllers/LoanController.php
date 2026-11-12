@@ -57,6 +57,8 @@ use App\Models\Loan;
 use App\Models\Repayment;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\User;
+use App\Notifications\SystemNotice;
 
 class LoanController extends Controller
 {
@@ -107,8 +109,25 @@ class LoanController extends Controller
             'status' => 'pending',
         ]);
 
+        // Notify borrower
+        $request->user()->notify(new SystemNotice(
+            "Your loan application for \${$loan->principal} has been submitted and is pending review.",
+            "/loans"
+        ));
+
+        // Notify all admins
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new SystemNotice(
+                "New loan application pending review from {$request->user()->username}.",
+                "/loans"
+            ));
+        }
+
         return response()->json($loan, 201);
     }
+
+    
 
     /**
      * Admin-only status change (approve / reject / activate / mark paid / overdue).
@@ -123,6 +142,30 @@ class LoanController extends Controller
         ]);
 
         $loan->update(['status' => $request->status]);
+
+
+    $messages = [
+        'approved' => "Your loan application was approved.",
+        'rejected' => "Your loan application was rejected.",
+        'active'   => "Your loan is now active and disbursed.",
+        'paid'     => "Your loan is fully paid off. Thank you!",
+        'overdue'  => "Your loan is now overdue. Please make a payment.",
+    ];
+
+    if (isset($messages[$request->status]) && $loan->user) {
+        $loan->user->notify(new SystemNotice($messages[$request->status], "/loans"));
+    }
+
+    // Alert admins on overdue
+    if ($request->status === 'overdue') {
+        $admins = User::where('role', 'admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new SystemNotice(
+                "Loan #{$loan->id} ({$loan->user->username}) is now overdue.",
+                "/loans"
+            ));
+        }
+    }
 
         return response()->json($loan);
     }
@@ -144,6 +187,13 @@ class LoanController extends Controller
         ]);
 
         $repayment = $loan->repayments()->create($validated);
+
+        if ($loan->user) {
+        $loan->user->notify(new SystemNotice(
+            "A payment of \${$repayment->amount} has been recorded on your loan.",
+            "/loans"
+        ));
+    }
 
         return response()->json($repayment, 201);
     }
