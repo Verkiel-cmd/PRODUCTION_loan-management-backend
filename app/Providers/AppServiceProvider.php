@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
     );
 
     try {
-        $databaseName = env('DB_DATABASE', 'student_management');
+        $databaseName = env('DB_DATABASE', 'loan_management');
 
         // Temporarily connect without a database name to check/create it
         $config = Config::get('database.connections.mysql');
